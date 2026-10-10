@@ -1072,6 +1072,8 @@ def launch_options(
         browser_binary = launch_path(browser_path)
     else:
         browser_binary = launch_path()
+    # An explicit browser override may differ from the active managed install.
+    bundle_path = executable_path or (Path(browser_binary) if browser else None)
     warn_if_package_outdated()
 
     # Get the Firefox version
@@ -1534,11 +1536,11 @@ def launch_options(
 
     # Validate the config
     warn_if_executable_predates_playwright(executable_path)
-    validate_config(config, path=executable_path)
+    validate_config(config, path=bundle_path)
 
     # Prepare environment variables to pass to Camoufox
     env_vars = {
-        **get_env_vars(config, target_os, path=executable_path),
+        **get_env_vars(config, target_os, path=bundle_path),
         **get_pref_env_vars(firefox_user_prefs),
         **env,
     }
